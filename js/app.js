@@ -99,6 +99,10 @@ class App {
     subscribeToDataChanges() {
         feedsManager.subscribe(() => this.updateAll());
         remindersManager.subscribe(() => this.updateRemindersList());
+        medicationsManager.subscribe(() => {
+            this.updateMedicationsList();
+            this.updateMedicationLogs();
+        });
     }
 
     // Update header with baby's name
@@ -287,6 +291,8 @@ class App {
         this.updateCharts();
         this.updateRemindersList();
         this.updateDiaperStats();
+        this.updateMedicationsList();
+        this.updateMedicationLogs();
     }
 
     // Update dashboard statistics
@@ -537,6 +543,115 @@ class App {
         `;
 
         container.innerHTML = listHTML;
+    }
+
+    // Update medications list
+    updateMedicationsList() {
+        const container = document.getElementById('medicationsContent');
+        if (!container) return;
+
+        const medications = medicationsManager.getAllMedications();
+
+        if (medications.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <p>Nenhum medicamento cadastrado</p>
+                    <p>Use o formulário acima para adicionar medicamentos</p>
+                </div>
+            `;
+            return;
+        }
+
+        const listHTML = `
+            <div class="medications-grid">
+                ${medications.map(med => `
+                    <div class="medication-card">
+                        <div class="medication-icon">💊</div>
+                        <div class="medication-info">
+                            <h4 class="medication-name">${med.name}</h4>
+                            <div class="medication-details">
+                                <span class="medication-dosage">📏 ${med.dosage}</span>
+                                ${med.frequency ? `<span class="medication-frequency">⏰ ${med.frequency}</span>` : ''}
+                            </div>
+                            ${med.instructions ? `<p class="medication-instructions">📝 ${med.instructions}</p>` : ''}
+                        </div>
+                        <button class="btn-small btn-delete-small" onclick="app.deleteMedication('${med.id}')">🗑️</button>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        container.innerHTML = listHTML;
+    }
+
+    // Update medication logs
+    updateMedicationLogs() {
+        const container = document.getElementById('medicationLogsContent');
+        if (!container) return;
+
+        const logs = medicationsManager.getAllLogs();
+
+        if (logs.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state" style="padding: 20px;">
+                    <p>Nenhum registro de administração</p>
+                    <p>Use o formulário acima para registrar administrações</p>
+                </div>
+            `;
+            return;
+        }
+
+        const logsHTML = `
+            <div class="medication-logs">
+                ${logs.map(log => {
+                    const medication = medicationsManager.getMedicationById(log.medication_id);
+                    const medName = medication ? medication.name : 'Medicamento removido';
+                    const medDosage = medication ? medication.dosage : '';
+
+                    return `
+                        <div class="log-entry">
+                            <div class="log-icon">💊</div>
+                            <div class="log-content">
+                                <div class="log-medication">${medName}</div>
+                                <div class="log-details">
+                                    <span class="log-dosage">✅ ${log.dosage_given}</span>
+                                    ${medDosage ? `<span class="log-concentration">(${medDosage})</span>` : ''}
+                                </div>
+                                <div class="log-date">${medicationsManager.formatLogDate(log.log_date)}</div>
+                                ${log.notes ? `<div class="log-notes">📝 ${log.notes}</div>` : ''}
+                            </div>
+                            <button class="btn-small btn-delete-small" onclick="app.deleteMedicationLog('${log.id}')">🗑️</button>
+                        </div>
+                    `;
+                }).join('')}
+            </div>
+        `;
+
+        container.innerHTML = logsHTML;
+    }
+
+    // Delete medication
+    async deleteMedication(medicationId) {
+        if (confirm('Tem certeza que deseja excluir este medicamento? Todos os registros de administração também serão excluídos.')) {
+            const result = await medicationsManager.deleteMedication(medicationId);
+            if (result.success) {
+                this.showSuccess('Medicamento excluído com sucesso!');
+            } else {
+                this.showError('Erro ao excluir medicamento: ' + result.error);
+            }
+        }
+    }
+
+    // Delete medication log
+    async deleteMedicationLog(logId) {
+        if (confirm('Tem certeza que deseja excluir este registro?')) {
+            const result = await medicationsManager.deleteLog(logId);
+            if (result.success) {
+                this.showSuccess('Registro excluído com sucesso!');
+            } else {
+                this.showError('Erro ao excluir registro: ' + result.error);
+            }
+        }
     }
 
     // Delete feed
