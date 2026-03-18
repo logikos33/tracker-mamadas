@@ -311,6 +311,11 @@ input:focus, select:focus, textarea:focus {
     color: #7B1FA2;
 }
 
+.type-fralda {
+    background: #E8F5E9;
+    color: #43A047;
+}
+
 .btn-delete {
     background: var(--danger-color);
     color: white;
@@ -690,4 +695,123 @@ input:focus, select:focus, textarea:focus {
     font-weight: 500;
     color: var(--dark-color);
     margin-top: 4px;
+}
+
+/* Botão rápido de fralda */
+.btn-quick-diaper {
+    background: linear-gradient(135deg, #43A047 0%, #66BB6A 100%);
+    color: white;
+    border: none;
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.btn-quick-diaper:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 6px 20px rgba(67, 160, 71, 0.4);
+}
+
+.btn-quick-diaper:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.btn-quick-diaper.bounce {
+    animation: bounce 0.5s ease;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Cards de estatísticas de fraldas */
+.diaper-stats {
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    border: 2px solid #81C784;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+}
+
+.diaper-stats .icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.diaper-stats .count {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2E7D32;
+}
+
+.diaper-stats .label {
+    font-size: 0.9rem;
+    color: #43A047;
+    margin-top: 5px;
+}
+
+.diaper-trend {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 8px;
+}
+
+.diaper-trend.up {
+    color: #43A047;
+}
+
+.diaper-trend.down {
+    color: #E57373;
+}
+
+/* Seção de fraldas */
+.diaper-section {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(93, 78, 55, 0.2);
+    margin-bottom: 20px;
+}
+
+.diaper-section h2 {
+    color: #43A047;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.diaper-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.diaper-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .diaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .diaper-grid-3 {
+        grid-template-columns: 1fr;
+    }
 }

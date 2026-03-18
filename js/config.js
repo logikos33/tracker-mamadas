@@ -23,7 +23,9 @@ const TABLES = {
 // Feed types enum
 const FEED_TYPES = {
     MATERNO: 'materno',
-    FORMULA: 'formula'
+    FORMULA: 'formula',
+    FRALDA: 'fralda',
+    MEDICAMENTO: 'medicamento'
 };
 
 // Reminder defaults

@@ -62,6 +62,13 @@ function handleFeedTypeChange(type) {
         // Update required attribute
         const durationInput = document.getElementById('feedDuration');
         if (durationInput) durationInput.removeAttribute('required');
+    } else if (type === 'fralda') {
+        if (durationGroup) durationGroup.style.display = 'none';
+        if (medicationGroup) medicationGroup.style.display = 'none';
+        if (dosageGroup) dosageGroup.style.display = 'none';
+        // Update required attribute
+        const durationInput = document.getElementById('feedDuration');
+        if (durationInput) durationInput.removeAttribute('required');
     } else {
         if (durationGroup) durationGroup.style.display = 'block';
         if (medicationGroup) medicationGroup.style.display = 'none';
@@ -133,6 +140,8 @@ function getFeedTypeIcon(type) {
             return '🤱';
         case 'formula':
             return '🍼';
+        case 'fralda':
+            return '👶';
         case 'medicamento':
             return '💊';
         default:
@@ -151,6 +160,8 @@ function getFeedTypeLabel(type) {
             return 'Leite Materno';
         case 'formula':
             return 'Fórmula';
+        case 'fralda':
+            return 'Troca de Fralda';
         case 'medicamento':
             return 'Medicamento';
         default:
@@ -164,3 +175,37 @@ window.handleFeedTypeChange = handleFeedTypeChange;
 window.showAddMedicationModal = showAddMedicationModal;
 window.getFeedTypeIcon = getFeedTypeIcon;
 window.getFeedTypeLabel = getFeedTypeLabel;
+
+/**
+ * Quick diaper change registration
+ */
+async function quickDiaperChange() {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    const feedDate = now.toISOString().slice(0, 16);
+
+    // Visual feedback
+    const button = document.querySelector('.btn-quick-diaper');
+    if (button) {
+        button.classList.add('bounce');
+        setTimeout(() => button.classList.remove('bounce'), 500);
+    }
+
+    // Create diaper change record
+    const result = await feedsManager.createFeed({
+        type: 'fralda',
+        duration: 0,
+        feed_date: feedDate,
+        notes: 'Troca rápida de fralda'
+    });
+
+    if (result.success) {
+        app.showSuccess('👶 Fralda trocada com sucesso!');
+        app.updateDiaperStats();
+    } else {
+        app.showError('Erro ao registrar troca: ' + result.error);
+    }
+}
+
+window.quickDiaperChange = quickDiaperChange;
+

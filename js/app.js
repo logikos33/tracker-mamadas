@@ -166,6 +166,29 @@ class App {
         const feedDate = document.getElementById('feedDate').value;
         let result;
 
+        if (type === 'fralda') {
+            // Handle diaper change
+            const notes = document.getElementById('feedNotes')?.value || 'Troca de fralda';
+
+            result = await feedsManager.createFeed({
+                type: 'fralda',
+                duration: 0,
+                feed_date: feedDate,
+                notes: notes
+            });
+
+            if (result.success) {
+                this.showSuccess('👶 Fralda trocada com sucesso!');
+                document.getElementById('feedForm').reset();
+                this.setCurrentDateTime();
+                handleFeedTypeChange('');
+                this.updateDiaperStats();
+            } else {
+                this.showError('Erro ao registrar: ' + result.error);
+            }
+            return;
+        }
+
         if (type === 'medicamento') {
             // Handle medication
             const medicationId = document.getElementById('medicationSelect').value;
@@ -263,6 +286,7 @@ class App {
         this.updateHistory();
         this.updateCharts();
         this.updateRemindersList();
+        this.updateDiaperStats();
     }
 
     // Update dashboard statistics
@@ -338,11 +362,23 @@ class App {
                     ${feeds.map(feed => `
                         <tr>
                             <td>${feedsManager.formatFeedDate(feed.feed_date)}</td>
-                            <td><span class="type-badge ${feed.type === FEED_TYPES.MATERNO ? 'type-materno' : feed.type === FEED_TYPES.FORMULA ? 'type-formula' : 'type-medicamento'}">
+                            <td><span class="type-badge ${
+                                feed.type === FEED_TYPES.MATERNO ? 'type-materno' :
+                                feed.type === FEED_TYPES.FORMULA ? 'type-formula' :
+                                feed.type === 'fralda' ? 'type-fralda' : 'type-medicamento'
+                            }">
                                 ${getFeedTypeIcon(feed.type)} ${getFeedTypeLabel(feed.type)}
                             </span></td>
-                            <td>${feed.type === 'medicamento' ? feed.notes : formatMinutesToHours(feed.duration)}</td>
-                            <td>${feed.notes && feed.type !== 'medicamento' ? feed.notes : (feed.type === 'medicamento' ? (feed.dosage_given || '-') : '-')}</td>
+                            <td>${
+                                feed.type === 'medicamento' ? feed.notes :
+                                feed.type === 'fralda' ? 'Troca registrada' :
+                                formatMinutesToHours(feed.duration)
+                            }</td>
+                            <td>${
+                                feed.type === 'medicamento' ? (feed.dosage_given || '-') :
+                                feed.type === 'fralda' ? (feed.notes || '-') :
+                                (feed.notes || '-')
+                            }</td>
                             <td><button class="btn-delete" onclick="app.deleteFeed('${feed.id}')">Excluir</button></td>
                         </tr>
                     `).join('')}
@@ -351,6 +387,103 @@ class App {
         `;
 
         container.innerHTML = tableHTML;
+    }
+
+    // Update diaper statistics
+    updateDiaperStats() {
+        const feeds = feedsManager.getAllFeeds();
+        const diaperFeeds = feeds.filter(f => f.type === 'fralda');
+
+        // Today's diapers
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const todayDiapers = diaperFeeds.filter(f => {
+            const feedDate = new Date(f.feed_date);
+            return feedDate >= today && feedDate < tomorrow;
+        });
+
+        // Week diapers (last 7 days)
+        const weekStart = new Date();
+        weekStart.setDate(weekStart.getDate() - 7);
+        weekStart.setHours(0, 0, 0, 0);
+
+        const weekDiapers = diaperFeeds.filter(f => {
+            const feedDate = new Date(f.feed_date);
+            return feedDate >= weekStart;
+        });
+
+        // Month diapers (last 30 days)
+        const monthStart = new Date();
+        monthStart.setDate(monthStart.getDate() - 30);
+        monthStart.setHours(0, 0, 0, 0);
+
+        const monthDiapers = diaperFeeds.filter(f => {
+            const feedDate = new Date(f.feed_date);
+            return feedDate >= monthStart;
+        });
+
+        // Calculate averages and trends
+        const todayCountEl = document.getElementById('diaperTodayCount');
+        const weekCountEl = document.getElementById('diaperWeekCount');
+        const monthCountEl = document.getElementById('diaperMonthCount');
+        const avgDayEl = document.getElementById('diaperAvgDay');
+        const weekTrendEl = document.getElementById('diaperWeekTrend');
+        const monthTrendEl = document.getElementById('diaperMonthTrend');
+
+        if (todayCountEl) todayCountEl.textContent = todayDiapers.length;
+        if (weekCountEl) weekCountEl.textContent = weekDiapers.length;
+        if (monthCountEl) monthCountEl.textContent = monthDiapers.length;
+
+        // Average per day (this week)
+        const avgPerDay = Math.round(weekDiapers.length / 7);
+        if (avgDayEl) avgDayEl.textContent = avgPerDay;
+
+        // Trends
+        if (weekTrendEl) {
+            const lastWeekDiapers = diaperFeeds.filter(f => {
+                const feedDate = new Date(f.feed_date);
+                const twoWeeksAgo = new Date();
+                twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+                return feedDate >= twoWeeksAgo && feedDate < weekStart;
+            });
+
+            if (lastWeekDiapers.length > 0) {
+                const diff = weekDiapers.length - lastWeekDiapers.length;
+                const percent = Math.round((diff / lastWeekDiapers.length) * 100);
+                if (diff > 0) {
+                    weekTrendEl.textContent = `↑ ${percent}% vs semana passada`;
+                    weekTrendEl.className = 'diaper-trend up';
+                } else if (diff < 0) {
+                    weekTrendEl.textContent = `↓ ${Math.abs(percent)}% vs semana passada`;
+                    weekTrendEl.className = 'diaper-trend down';
+                } else {
+                    weekTrendEl.textContent = '= Igual à semana passada';
+                    weekTrendEl.className = 'diaper-trend';
+                }
+            } else {
+                weekTrendEl.textContent = '';
+            }
+        }
+
+        if (monthTrendEl) {
+            const avgThisWeek = avgPerDay;
+            const avgMonth = Math.round(monthDiapers.length / 30);
+            if (avgThisWeek > avgMonth) {
+                const percent = Math.round(((avgThisWeek - avgMonth) / avgMonth) * 100);
+                monthTrendEl.textContent = `↑ ${percent}% acima da média`;
+                monthTrendEl.className = 'diaper-trend up';
+            } else if (avgThisWeek < avgMonth) {
+                const percent = Math.round(((avgMonth - avgThisWeek) / avgMonth) * 100);
+                monthTrendEl.textContent = `↓ ${percent}% abaixo da média`;
+                monthTrendEl.className = 'diaper-trend down';
+            } else {
+                monthTrendEl.textContent = '= Na média mensal';
+                monthTrendEl.className = 'diaper-trend';
+            }
+        }
     }
 
     // Update charts

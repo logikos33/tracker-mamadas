@@ -20,6 +20,40 @@
             ✓ Operação realizada com sucesso!
         </div>
 
+        <!-- Botão Rápido de Troca de Fralda -->
+        <div class="diaper-section">
+            <button class="btn-quick-diaper" onclick="quickDiaperChange()">
+                <span style="font-size: 2rem;">👶</span>
+                <span>Registrar Troca de Fralda</span>
+            </button>
+
+            <!-- Estatísticas Rápidas de Fraldas -->
+            <div class="diaper-grid">
+                <div class="diaper-stats">
+                    <div class="icon">🌅</div>
+                    <div class="count" id="diaperTodayCount">0</div>
+                    <div class="label">Hoje</div>
+                </div>
+                <div class="diaper-stats">
+                    <div class="icon">📊</div>
+                    <div class="count" id="diaperWeekCount">0</div>
+                    <div class="label">Esta Semana</div>
+                    <div class="diaper-trend" id="diaperWeekTrend"></div>
+                </div>
+                <div class="diaper-stats">
+                    <div class="icon">📈</div>
+                    <div class="count" id="diaperMonthCount">0</div>
+                    <div class="label">Este Mês</div>
+                    <div class="diaper-trend" id="diaperMonthTrend"></div>
+                </div>
+                <div class="diaper-stats">
+                    <div class="icon">📅</div>
+                    <div class="count" id="diaperAvgDay">0</div>
+                    <div class="label">Média por Dia</div>
+                </div>
+            </div>
+        </div>
+
         <div class="main-content">
             <!-- Formulário -->
             <div class="card">
@@ -31,6 +65,7 @@
                             <option value="">Selecione...</option>
                             <option value="materno">🤱 Leite Materno</option>
                             <option value="formula">🍼 Fórmula</option>
+                            <option value="fralda">👶 Fralda</option>
                             <option value="medicamento">💊 Medicamento</option>
                         </select>
                     </div>
