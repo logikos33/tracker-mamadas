@@ -275,6 +275,14 @@
     <script>
         // Handle reminder form submission
         document.addEventListener('DOMContentLoaded', () => {
+            // Set default date for reminder form
+            const reminderDateInput = document.getElementById('reminderDate');
+            if (reminderDateInput) {
+                const today = new Date();
+                const dateStr = today.toISOString().slice(0, 10);
+                reminderDateInput.value = dateStr;
+            }
+
             const reminderForm = document.getElementById('reminderForm');
             if (reminderForm) {
                 reminderForm.addEventListener('submit', async (e) => {
@@ -289,6 +297,11 @@
                     if (result.success) {
                         app.showSuccess('Lembrete adicionado com sucesso!');
                         reminderForm.reset();
+                        // Reset default date
+                        if (reminderDateInput) {
+                            const today = new Date();
+                            reminderDateInput.value = today.toISOString().slice(0, 10);
+                        }
                     } else {
                         app.showError('Erro ao adicionar lembrete: ' + result.error);
                     }
