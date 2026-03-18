@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker do Koda - Demonstração</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/theme.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .demo-container {
+            text-align: center;
+            color: white;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .demo-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .demo-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .demo-loading {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .demo-warning {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-icon">🍼</div>
+        <h1 class="demo-title">Tracker do Koda</h1>
+        <p class="demo-subtitle">Carregando demonstração...</p>
+        <div class="demo-loading">
+            Preparando seu ambiente de teste
+        </div>
+        <div class="spinner"></div>
+        <div class="demo-warning">
+            <strong>⚠️ Modo Demonstração</strong><br>
+            Dados são temporários e compartilhados entre visitantes
+        </div>
+    </div>
+
+    <!-- Load modules -->
+    <script src="js/config.js?v=2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/auth.js?v=2"></script>
+
+    <script>
+        // Configuração do usuário DEMO
+        const DEMO_CREDENTIALS = {
+            email: 'teste@teste.com',
+            password: 'teste123',
+            babyName: 'Bebê Teste'
+        };
+
+        // Inicializar e fazer login automático
+        (async function initDemo() {
+            try {
+                // Inicializar auth
+                await authManager.init();
+
+                // Fazer login automático
+                const result = await authManager.signIn(
+                    DEMO_CREDENTIALS.email,
+                    DEMO_CREDENTIALS.password
+                );
+
+                if (result.success) {
+                    // Marcar como modo demo
+                    localStorage.setItem('isDemoMode', 'true');
+                    localStorage.setItem('demoBabyName', DEMO_CREDENTIALS.babyName);
+
+                    // Redirecionar para app principal
+                    window.location.href = 'index.html';
+                } else {
+                    // Se falhar, mostrar erro
+                    showError('Erro ao carregar demonstração. Usuário demo não configurado.');
+                }
+            } catch (error) {
+                console.error('Demo init error:', error);
+                showError('Erro ao carregar demonstração.');
+            }
+        })();
+
+        function showError(message) {
+            document.querySelector('.demo-container').innerHTML = `
+                <div class="demo-icon">❌</div>
+                <h1 class="demo-title">Ops!</h1>
+                <p class="demo-subtitle">${message}</p>
+                <div class="demo-warning">
+                    <strong>Solução:</strong><br>
+                    Crie o usuário demo no Supabase:<br>
+                    Email: teste@teste.com<br>
+                    Senha: teste123
+                </div>
+                <button onclick="location.reload()" style="
+                    margin-top: 20px;
+                    padding: 15px 30px;
+                    background: white;
+                    color: var(--primary-color);
+                    border: none;
+                    border-radius: 25px;
+                    font-size: 1rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                ">Tentar Novamente</button>
+            `;
+        }
+    </script>
+</body>
+</html>
