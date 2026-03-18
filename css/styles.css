@@ -4,9 +4,23 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Tema Marrom Teddy Bear */
+    --primary-color: #8B6F47;
+    --secondary-color: #A0826D;
+    --accent-color: #D4A574;
+    --light-color: #F5E6D3;
+    --dark-color: #5D4E37;
+    --gradient-start: #C4A484;
+    --gradient-end: #8B7355;
+    --success-color: #7CB342;
+    --warning-color: #FFA726;
+    --danger-color: #EF5350;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
     min-height: 100vh;
     padding: 20px;
 }
@@ -68,11 +82,11 @@ header p {
     background: white;
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(93, 78, 55, 0.2);
 }
 
 .card h2 {
-    color: #667eea;
+    color: var(--primary-color);
     margin-bottom: 20px;
     font-size: 1.5rem;
     display: flex;
@@ -108,13 +122,13 @@ textarea {
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--primary-color);
 }
 
 .btn-submit, .btn-primary {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     border: none;
     border-radius: 10px;
@@ -126,11 +140,11 @@ input:focus, select:focus, textarea:focus {
 
 .btn-submit:hover, .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(139, 111, 71, 0.4);
 }
 
 .btn-secondary {
-    background: #6c757d;
+    background: var(--secondary-color);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -141,7 +155,39 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
+    background: var(--dark-color);
+}
+
+/* Botões rápidos de duração */
+.duration-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.duration-btn {
+    flex: 1;
+    min-width: 60px;
+    padding: 10px;
+    background: var(--light-color);
+    color: var(--dark-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.duration-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.duration-btn:active {
+    transform: scale(0.95);
 }
 
 .stats-grid {
@@ -152,21 +198,22 @@ input:focus, select:focus, textarea:focus {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #FFF8E7 0%, #FFE4B5 100%);
     padding: 20px;
     border-radius: 15px;
     text-align: center;
+    border: 2px solid var(--light-color);
 }
 
 .stat-card .number {
     font-size: 2rem;
     font-weight: 700;
-    color: #667eea;
+    color: var(--primary-color);
 }
 
 .stat-card .label {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--dark-color);
     margin-top: 5px;
 }
 
@@ -180,7 +227,7 @@ input:focus, select:focus, textarea:focus {
     background: white;
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(93, 78, 55, 0.2);
     margin-bottom: 20px;
 }
 
@@ -192,13 +239,13 @@ input:focus, select:focus, textarea:focus {
 }
 
 .chart-wrapper {
-    background: #f8f9fa;
+    background: var(--light-color);
     padding: 20px;
     border-radius: 15px;
 }
 
 .chart-wrapper h3 {
-    color: #667eea;
+    color: var(--primary-color);
     margin-bottom: 15px;
     font-size: 1.1rem;
 }
@@ -207,7 +254,7 @@ input:focus, select:focus, textarea:focus {
     background: white;
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(93, 78, 55, 0.2);
 }
 
 .history-table {
@@ -217,7 +264,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .history-table th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
     padding: 15px;
     text-align: left;
@@ -238,7 +285,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .history-table tr:hover {
-    background: #f5f5f5;
+    background: var(--light-color);
 }
 
 .type-badge {
@@ -250,17 +297,22 @@ input:focus, select:focus, textarea:focus {
 }
 
 .type-materno {
-    background: #e3f2fd;
-    color: #1976d2;
+    background: #E3F2FD;
+    color: #1976D2;
 }
 
 .type-formula {
-    background: #fff3e0;
-    color: #f57c00;
+    background: #FFF3E0;
+    color: #F57C00;
+}
+
+.type-medicamento {
+    background: #F3E5F5;
+    color: #7B1FA2;
 }
 
 .btn-delete {
-    background: #ef5350;
+    background: var(--danger-color);
     color: white;
     border: none;
     padding: 8px 15px;
@@ -271,11 +323,11 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-delete:hover {
-    background: #c62828;
+    background: #C62828;
 }
 
 .btn-clear {
-    background: #ff6b6b;
+    background: #FF6B6B;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -287,7 +339,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-clear:hover {
-    background: #ee5a52;
+    background: #EE5A52;
 }
 
 .empty-state {
@@ -304,7 +356,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .success-message {
-    background: #4caf50;
+    background: var(--success-color);
     color: white;
     padding: 15px;
     border-radius: 10px;
@@ -314,7 +366,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .error-message {
-    background: #f44336;
+    background: var(--danger-color);
     color: white;
     padding: 15px;
     border-radius: 10px;
@@ -365,6 +417,10 @@ input:focus, select:focus, textarea:focus {
     .history-table td {
         padding: 10px;
     }
+
+    .duration-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 /* Auth pages styles */
@@ -377,12 +433,12 @@ input:focus, select:focus, textarea:focus {
     background: white;
     border-radius: 20px;
     padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(93, 78, 55, 0.2);
 }
 
 .auth-card h1 {
     text-align: center;
-    color: #667eea;
+    color: var(--primary-color);
     margin-bottom: 10px;
     font-size: 2rem;
 }
@@ -400,7 +456,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .auth-links a {
-    color: #667eea;
+    color: var(--primary-color);
     text-decoration: none;
     font-weight: 500;
 }
@@ -415,13 +471,14 @@ input:focus, select:focus, textarea:focus {
 }
 
 .reminder-item {
-    background: #f8f9fa;
+    background: var(--light-color);
     border-radius: 10px;
     padding: 15px;
     margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-left: 4px solid var(--accent-color);
 }
 
 .reminder-info {
@@ -431,11 +488,11 @@ input:focus, select:focus, textarea:focus {
 .reminder-time {
     font-size: 1.2rem;
     font-weight: 600;
-    color: #667eea;
+    color: var(--primary-color);
 }
 
 .reminder-label {
-    color: #666;
+    color: var(--dark-color);
     font-size: 0.9rem;
 }
 
@@ -458,7 +515,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-toggle {
-    background: #4caf50;
+    background: var(--success-color);
     color: white;
 }
 
@@ -472,7 +529,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .btn-delete-small {
-    background: #f44336;
+    background: var(--danger-color);
     color: white;
 }
 
@@ -486,9 +543,9 @@ input:focus, select:focus, textarea:focus {
 
 .period-filter button {
     padding: 10px 20px;
-    border: 2px solid #667eea;
+    border: 2px solid var(--primary-color);
     background: white;
-    color: #667eea;
+    color: var(--primary-color);
     border-radius: 8px;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
@@ -497,7 +554,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 .period-filter button.active {
-    background: #667eea;
+    background: var(--primary-color);
     color: white;
 }
 
@@ -509,4 +566,128 @@ input:focus, select:focus, textarea:focus {
 .profile-form {
     max-width: 600px;
     margin: 0 auto;
+}
+
+/* Theme color selector */
+.theme-selector {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.theme-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 12px;
+    border: 3px solid transparent;
+    transition: all 0.3s;
+    background: var(--light-color);
+}
+
+.theme-option:hover {
+    transform: scale(1.05);
+}
+
+.theme-option.selected {
+    border-color: var(--primary-color);
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-color {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.theme-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+/* Medicamentos */
+.medication-card {
+    background: linear-gradient(135deg, #FFF8E7 0%, #FFE4B5 100%);
+    border: 2px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+.medication-card h4 {
+    color: var(--dark-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.medication-info {
+    font-size: 0.9rem;
+    color: var(--dark-color);
+    margin-bottom: 5px;
+}
+
+.medication-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-add-medication {
+    background: var(--success-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-add-medication:hover {
+    background: #689F38;
+}
+
+.btn-log-medication {
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-log-medication:hover {
+    background: var(--primary-color);
+}
+
+.medication-log {
+    background: white;
+    border-left: 4px solid var(--accent-color);
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.medication-log-time {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.medication-log-details {
+    font-weight: 500;
+    color: var(--dark-color);
+    margin-top: 4px;
 }

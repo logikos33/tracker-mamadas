@@ -11,8 +11,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>🍼 Tracker de Mamadas</h1>
-            <p>Acompanhe a alimentação do seu bebê</p>
+            <h1>🧸 Tracker do Bebê Urso</h1>
+            <p>Acompanhe os momentos especiais do seu bebê</p>
         </header>
 
         <div id="successMessage" class="success-message">
@@ -22,20 +22,40 @@
         <div class="main-content">
             <!-- Formulário -->
             <div class="card">
-                <h2>📝 Nova Mamada</h2>
+                <h2>🧸 Novo Momento</h2>
                 <form id="feedForm">
                     <div class="form-group">
                         <label for="feedType">Tipo de Alimentação</label>
                         <select id="feedType" required>
                             <option value="">Selecione...</option>
-                            <option value="materno">Leite Materno 🤱</option>
-                            <option value="formula">Fórmula 🍼</option>
+                            <option value="materno">🤱 Leite Materno</option>
+                            <option value="formula">🍼 Fórmula</option>
+                            <option value="medicamento">💊 Medicamento</option>
                         </select>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="durationGroup">
                         <label for="feedDuration">Duração (minutos)</label>
                         <input type="number" id="feedDuration" min="1" max="180" required placeholder="Ex: 20">
+                        <div class="duration-buttons">
+                            <button type="button" class="duration-btn" onclick="addDuration(1)">+1 min</button>
+                            <button type="button" class="duration-btn" onclick="addDuration(5)">+5 min</button>
+                            <button type="button" class="duration-btn" onclick="addDuration(10)">+10 min</button>
+                            <button type="button" class="duration-btn" onclick="addDuration(15)">+15 min</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="medicationGroup" style="display: none;">
+                        <label for="medicationSelect">Medicamento</label>
+                        <select id="medicationSelect">
+                            <option value="">Selecione um medicamento...</option>
+                        </select>
+                        <button type="button" class="btn-add-medication" style="margin-top: 8px;" onclick="showAddMedicationModal()">+ Adicionar Novo Medicamento</button>
+                    </div>
+
+                    <div class="form-group" id="dosageGroup" style="display: none;">
+                        <label for="medicationDosage">Dosagem (ml, mg, gotas, etc.)</label>
+                        <input type="text" id="medicationDosage" placeholder="Ex: 5ml, 1 gota, 10mg">
                     </div>
 
                     <div class="form-group">
@@ -54,19 +74,19 @@
 
             <!-- Dashboard de Hoje -->
             <div class="card">
-                <h2>📊 Dashboard de Hoje</h2>
+                <h2>💕 Hoje do Bebê</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="number" id="todayCount">0</div>
-                        <div class="label">Mamadas Hoje</div>
+                        <div class="label">Momentos de Amor</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="todayDuration">0</div>
-                        <div class="label">Minutos Totais</div>
+                        <div class="label">Tempo de Cuidado</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="avgDuration">0</div>
-                        <div class="label">Média (min)</div>
+                        <div class="label">Média por Momento</div>
                     </div>
                 </div>
                 <div class="chart-container">
@@ -78,37 +98,37 @@
         <!-- Estatísticas da Semana e Mês -->
         <div class="main-content" style="margin-top: 20px;">
             <div class="card">
-                <h2>📅 Esta Semana (7 dias)</h2>
+                <h2>🌟 Esta Semana (7 dias)</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="number" id="weekCount">0</div>
-                        <div class="label">Mamadas</div>
+                        <div class="label">Momentos</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="weekDuration">0</div>
-                        <div class="label">Minutos Totais</div>
+                        <div class="label">Tempo de Cuidado</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="weekAvg">0</div>
-                        <div class="label">Média (min)</div>
+                        <div class="label">Média</div>
                     </div>
                 </div>
             </div>
 
             <div class="card">
-                <h2>📆 Este Mês (30 dias)</h2>
+                <h2>🌈 Este Mês (30 dias)</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="number" id="monthCount">0</div>
-                        <div class="label">Mamadas</div>
+                        <div class="label">Momentos</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="monthDuration">0</div>
-                        <div class="label">Minutos Totais</div>
+                        <div class="label">Tempo de Cuidado</div>
                     </div>
                     <div class="stat-card">
                         <div class="number" id="monthAvg">0</div>
-                        <div class="label">Média (min)</div>
+                        <div class="label">Média</div>
                     </div>
                 </div>
             </div>
@@ -116,7 +136,7 @@
 
         <!-- Gráficos Temporais -->
         <div class="charts-section">
-            <h2>📈 Evolução Temporal</h2>
+            <h2>📊 Jornada do Crescimento</h2>
 
             <!-- Period Filter -->
             <div class="period-filter">
@@ -158,7 +178,7 @@
 
         <!-- Histórico -->
         <div class="history-section">
-            <h2>📜 Histórico Recente</h2>
+            <h2>📖 Memórias do Bebê</h2>
             <button class="btn-clear" onclick="if(confirm('Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita.')) app.handleClearAll()">🗑️ Limpar Todos os Dados</button>
             <div id="historyContent">
                 <div class="empty-state">

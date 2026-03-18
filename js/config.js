@@ -15,7 +15,9 @@ const SUPABASE_CONFIG = {
 const TABLES = {
     PROFILES: 'profiles',
     FEEDS: 'feeds',
-    REMINDERS: 'reminders'
+    REMINDERS: 'reminders',
+    MEDICATIONS: 'medications',
+    MEDICATION_LOGS: 'medication_logs'
 };
 
 // Feed types enum
