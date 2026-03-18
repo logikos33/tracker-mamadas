@@ -1,9 +1,29 @@
-// Utility Functions for Tracker de Mamadas
+/**
+ * ============================================================================
+ * UTILITIES - Tracker do Koda
+ * ============================================================================
+ * Funções utilitárias e helpers para o aplicativo
+ *
+ * @module utils
+ * @author Tracker do Koda Team
+ * @version 2.0.0
+ * ============================================================================
+ */
+
+// ============================================================================
+// TIME FORMATTING
+// ============================================================================
 
 /**
- * Convert minutes to hours format (e.g., 90 -> "1h30min", 150 -> "2h30min")
- * @param {number} minutes - Minutes to convert
- * @returns {string} Formatted time string
+ * Converte minutos para formato de horas (ex: 90 -> "1h30min", 150 -> "2h30min")
+ * @param {number} minutes - Minutos para converter
+ * @returns {string} Tempo formatado
+ *
+ * @example
+ * formatMinutesToHours(90)    // "1h30min"
+ * formatMinutesToHours(120)   // "2h"
+ * formatMinutesToHours(45)    // "45min"
+ * formatMinutesToHours(0)     // "0min"
  */
 function formatMinutesToHours(minutes) {
     if (minutes === 0) return '0min';
@@ -21,78 +41,86 @@ function formatMinutesToHours(minutes) {
 }
 
 /**
- * Format duration for display in feeds
- * @param {number} minutes - Minutes to format
- * @param {string} type - Type of feed (materno, formula, medicamento)
- * @returns {string} Formatted duration
+ * Formata duração para exibição em feeds
+ * @param {number} minutes - Minutos para formatar
+ * @param {string} type - Tipo de feed (materno, formula, medicamento)
+ * @returns {string} Duração formatada
  */
 function formatDuration(minutes, type = 'materno') {
     if (type === 'medicamento') {
-        return minutes; // For medications, return the dosage as-is
+        return minutes; // Para medicamentos, retorna a dosagem como está
     }
     return formatMinutesToHours(minutes);
 }
 
+// ============================================================================
+// DOM HELPERS
+// ============================================================================
+
 /**
- * Add time to duration input
- * @param {number} minutes - Minutes to add
+ * Adiciona tempo ao input de duração
+ * @param {number} minutes - Minutos para adicionar
  */
 function addDuration(minutes) {
     const input = document.getElementById('feedDuration');
-    if (input) {
-        const currentValue = parseInt(input.value) || 0;
-        const newValue = currentValue + minutes;
-        input.value = newValue;
-    }
+    if (!input) return;
+
+    const currentValue = parseInt(input.value) || 0;
+    const newValue = currentValue + minutes;
+    input.value = newValue;
 }
 
 /**
- * Show/hide medication fields based on feed type
- * @param {string} type - Selected feed type
+ * Alterna visibilidade dos campos baseado no tipo de alimentação
+ * @param {string} type - Tipo selecionado
  */
 function handleFeedTypeChange(type) {
     const durationGroup = document.getElementById('durationGroup');
     const medicationGroup = document.getElementById('medicationGroup');
     const dosageGroup = document.getElementById('dosageGroup');
+    const durationInput = document.getElementById('feedDuration');
 
-    if (type === 'medicamento') {
-        if (durationGroup) durationGroup.style.display = 'none';
-        if (medicationGroup) medicationGroup.style.display = 'block';
-        if (dosageGroup) dosageGroup.style.display = 'block';
-        // Update required attribute
-        const durationInput = document.getElementById('feedDuration');
-        if (durationInput) durationInput.removeAttribute('required');
-    } else if (type === 'fralda') {
-        if (durationGroup) durationGroup.style.display = 'none';
-        if (medicationGroup) medicationGroup.style.display = 'none';
-        if (dosageGroup) dosageGroup.style.display = 'none';
-        // Update required attribute
-        const durationInput = document.getElementById('feedDuration');
-        if (durationInput) durationInput.removeAttribute('required');
-    } else {
-        if (durationGroup) durationGroup.style.display = 'block';
-        if (medicationGroup) medicationGroup.style.display = 'none';
-        if (dosageGroup) dosageGroup.style.display = 'none';
-        // Update required attribute
-        const durationInput = document.getElementById('feedDuration');
-        if (durationInput) durationInput.setAttribute('required', 'true');
+    // Reset todos para oculto primeiro
+    if (durationGroup) durationGroup.style.display = 'none';
+    if (medicationGroup) medicationGroup.style.display = 'none';
+    if (dosageGroup) dosageGroup.style.display = 'none';
+
+    // Mostra campos apropriados baseado no tipo
+    switch (type) {
+        case 'medicamento':
+            if (medicationGroup) medicationGroup.style.display = 'block';
+            if (dosageGroup) dosageGroup.style.display = 'block';
+            if (durationInput) durationInput.removeAttribute('required');
+            break;
+
+        case 'fralda':
+            // Nenhum campo adicional necessário
+            if (durationInput) durationInput.removeAttribute('required');
+            break;
+
+        case 'materno':
+        case 'formula':
+        default:
+            if (durationGroup) durationGroup.style.display = 'block';
+            if (durationInput) durationInput.setAttribute('required', 'true');
+            break;
     }
 }
 
 /**
- * Populate medication select dropdown
- * @param {Array} medications - Array of medication objects
+ * Popula dropdown de medicamentos
+ * @param {Array<Object>} medications - Array de objetos de medicamentos
  */
 function populateMedicationSelect(medications) {
     const select = document.getElementById('medicationSelect');
     if (!select) return;
 
-    // Clear existing options except first
+    // Limpa opções existentes exceto a primeira
     while (select.options.length > 1) {
         select.remove(1);
     }
 
-    // Add medication options
+    // Adiciona opções de medicamentos
     medications.forEach(med => {
         const option = document.createElement('option');
         option.value = med.id;
@@ -101,150 +129,149 @@ function populateMedicationSelect(medications) {
     });
 }
 
+// ============================================================================
+// MODAL MANAGEMENT
+// ============================================================================
+
 /**
- * Open medication modal
+ * Abre modal de medicamento e foca no primeiro input
  */
 function openMedicationModal() {
-    console.log('Opening medication modal...');
     const modal = document.getElementById('medicationModal');
-    console.log('Modal element:', modal);
-
-    if (modal) {
-        modal.style.display = 'flex';
-        console.log('Modal display set to flex');
-        // Focus on first input
-        setTimeout(() => {
-            const nameInput = document.getElementById('newMedicationName');
-            if (nameInput) {
-                nameInput.focus();
-                console.log('Focused on name input');
-            }
-        }, 100);
-    } else {
-        console.error('Modal element not found!');
+    if (!modal) {
+        console.error('Modal element not found');
+        return;
     }
+
+    modal.style.display = 'flex';
+
+    // Foca no primeiro input após pequeno delay
+    setTimeout(() => {
+        const nameInput = document.getElementById('newMedicationName');
+        if (nameInput) {
+            nameInput.focus();
+        }
+    }, 100);
 }
 
 /**
- * Close medication modal
+ * Fecha modal de medicamento e reseta formulário
  */
 function closeMedicationModal() {
     const modal = document.getElementById('medicationModal');
-    if (modal) {
-        modal.style.display = 'none';
-        // Reset form
-        const form = document.getElementById('medicationForm');
-        if (form) {
-            form.reset();
-        }
+    if (!modal) return;
+
+    modal.style.display = 'none';
+
+    // Reseta formulário
+    const form = document.getElementById('medicationForm');
+    if (form) {
+        form.reset();
     }
 }
 
 /**
- * Show add medication modal (deprecated - use openMedicationModal)
- */
-function showAddMedicationModal() {
-    openMedicationModal();
-}
-
-/**
- * Handle medication form submission
+ * Manipula submissão do formulário de medicamento
+ * @async
+ * @param {Event} event - Evento de submissão do formulário
  */
 async function handleMedicationSubmit(event) {
     event.preventDefault();
 
+    // Coleta dados do formulário
     const name = document.getElementById('newMedicationName').value.trim();
     const dosage = document.getElementById('newMedicationDosage').value.trim();
     const frequency = document.getElementById('newMedicationFrequency').value.trim();
     const notes = document.getElementById('newMedicationNotes').value.trim();
 
+    // Valida campos obrigatórios
     if (!name || !dosage) {
         app.showError('Por favor, preencha os campos obrigatórios.');
         return;
     }
 
+    // Cria medicamento
     const result = await medicationsManager.createMedication({
-        name: name,
-        dosage: dosage,
+        name,
+        dosage,
         frequency: frequency || null,
-        instructions: notes || null  // Changed from 'notes' to 'instructions'
+        instructions: notes || null
     });
 
+    // Processa resultado
     if (result.success) {
         app.showSuccess('💊 Medicamento adicionado com sucesso!');
         closeMedicationModal();
-        // Update medication select
         await medicationsManager.loadMedications();
         populateMedicationSelect(medicationsManager.getAllMedications());
     } else {
-        app.showError('Erro ao adicionar medicamento: ' + result.error);
+        app.showError(`Erro ao adicionar medicamento: ${result.error}`);
     }
 }
 
+// ============================================================================
+// FEED TYPE HELPERS
+// ============================================================================
+
 /**
- * Get feed type icon
- * @param {string} type - Feed type
- * @returns {string} Icon emoji
+ * Mapa de ícones por tipo de alimentação
+ * @constant {Object<string, string>}
+ */
+const FEED_ICONS = {
+    materno: '🤱',
+    formula: '🍼',
+    fralda: '👶',
+    medicamento: '💊'
+};
+
+/**
+ * Mapa de labels por tipo de alimentação
+ * @constant {Object<string, string>}
+ */
+const FEED_LABELS = {
+    materno: 'Leite Materno',
+    formula: 'Fórmula',
+    fralda: 'Troca de Fralda',
+    medicamento: 'Medicamento'
+};
+
+/**
+ * Retorna ícone para tipo de alimentação
+ * @param {string} type - Tipo de alimentação
+ * @returns {string} Emoji do ícone
  */
 function getFeedTypeIcon(type) {
-    switch (type) {
-        case 'materno':
-            return '🤱';
-        case 'formula':
-            return '🍼';
-        case 'fralda':
-            return '👶';
-        case 'medicamento':
-            return '💊';
-        default:
-            return '📝';
-    }
+    return FEED_ICONS[type] || '📝';
 }
 
 /**
- * Get feed type label
- * @param {string} type - Feed type
- * @returns {string} Type label
+ * Retorna label para tipo de alimentação
+ * @param {string} type - Tipo de alimentação
+ * @returns {string} Label descritiva
  */
 function getFeedTypeLabel(type) {
-    switch (type) {
-        case 'materno':
-            return 'Leite Materno';
-        case 'formula':
-            return 'Fórmula';
-        case 'fralda':
-            return 'Troca de Fralda';
-        case 'medicamento':
-            return 'Medicamento';
-        default:
-            return type;
-    }
+    return FEED_LABELS[type] || type;
 }
 
-// Expose functions globally for HTML onclick handlers
-window.addDuration = addDuration;
-window.handleFeedTypeChange = handleFeedTypeChange;
-window.showAddMedicationModal = showAddMedicationModal;
-window.getFeedTypeIcon = getFeedTypeIcon;
-window.getFeedTypeLabel = getFeedTypeLabel;
+// ============================================================================
+// QUICK ACTIONS
+// ============================================================================
 
 /**
- * Quick diaper change registration
+ * Registro rápido de troca de fralda
+ * @async
  */
 async function quickDiaperChange() {
-    const now = new Date();
+    const feedDate = new Date().toISOString();
 
-    // Convert to ISO string for Supabase
-    const feedDate = now.toISOString();
-
-    // Visual feedback
+    // Feedback visual
     const button = document.querySelector('.btn-quick-diaper');
     if (button) {
         button.classList.add('bounce');
         setTimeout(() => button.classList.remove('bounce'), 500);
     }
 
-    // Create diaper change record
+    // Cria registro
     const result = await feedsManager.createFeed({
         type: 'fralda',
         duration: 0,
@@ -252,13 +279,25 @@ async function quickDiaperChange() {
         notes: 'Troca rápida de fralda'
     });
 
+    // Processa resultado
     if (result.success) {
         app.showSuccess('👶 Fralda trocada com sucesso!');
         app.updateDiaperStats();
     } else {
-        app.showError('Erro ao registrar troca: ' + result.error);
+        app.showError(`Erro ao registrar troca: ${result.error}`);
     }
 }
 
-window.quickDiaperChange = quickDiaperChange;
+// ============================================================================
+// GLOBAL EXPORTS
+// ============================================================================
 
+// Expõe funções globalmente para handlers HTML
+window.addDuration = addDuration;
+window.handleFeedTypeChange = handleFeedTypeChange;
+window.openMedicationModal = openMedicationModal;
+window.closeMedicationModal = closeMedicationModal;
+window.handleMedicationSubmit = handleMedicationSubmit;
+window.getFeedTypeIcon = getFeedTypeIcon;
+window.getFeedTypeLabel = getFeedTypeLabel;
+window.quickDiaperChange = quickDiaperChange;
