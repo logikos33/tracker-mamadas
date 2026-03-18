@@ -34,7 +34,7 @@ Uma aplicação web completa e fofa para acompanhar todos os cuidados do seu beb
 3. Faça login com GitHub ou Google
 4. Clique em "New Project"
 5. Preencha:
-   - **Name**: `tracker-koda`
+   - **Name**: `tracker-Koda`
    - **Database Password**: (gere uma senha forte e salve)
    - **Region**: South America (São Paulo) recomendado
 6. Aguarde o provisionamento (~2-3 minutos)
@@ -212,7 +212,7 @@ const SUPABASE_CONFIG = {
 3. Vá em **Settings** → **Pages**
 4. Em "Source", selecione `main` branch
 5. Aguarde alguns segundos
-6. Acesse: `https://SEU_USUARIO.github.io/NOME_REPOSITORIO/`
+6. Acesse: `https://SEU_USUARIO.github.io/tracker-Koda/`
 
 #### Opção 2: Netlify (Grátis)
 
@@ -328,7 +328,7 @@ const SUPABASE_CONFIG = {
 ## 📁 Estrutura do Projeto
 
 ```
-tracker-koda/
+tracker-Koda/
 ├── index.html          # Aplicação principal
 ├── login.html          # Tela de login
 ├── register.html       # Tela de cadastro
