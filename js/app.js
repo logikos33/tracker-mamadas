@@ -409,7 +409,14 @@ class App {
 // Create global app instance
 const app = new App();
 
-// Initialize app when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    app.init();
-});
+// Initialize app when DOM is ready (will be called from index.html)
+function initializeApp() {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    } else {
+        // DOM is already ready
+        app.init();
+    }
+}
