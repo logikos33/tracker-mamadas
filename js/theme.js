@@ -1,9 +1,38 @@
-// Theme Management for Tracker de Mamadas
-// Carrega e aplica o tema salvo pelo usuário
+/**
+ * ============================================================================
+ * THEME MANAGEMENT - Tracker do Koda
+ * ============================================================================
+ * Gerencia temas de cores do aplicativo com persistência em localStorage
+ *
+ * @module theme
+ * @author Tracker do Koda Team
+ * @version 2.0.0
+ * ============================================================================
+ */
 
 (function() {
-    // Theme definitions
-    const themes = {
+    'use strict';
+
+    // ============================================================================
+    // CONSTANTS
+    // ============================================================================
+
+    /** Tema padrão do aplicativo */
+    const DEFAULT_THEME = 'brown';
+
+    /** Chave do localStorage para armazenar o tema */
+    const STORAGE_KEY = 'theme';
+
+    // ============================================================================
+    // THEME DEFINITIONS
+    // ============================================================================
+
+    /**
+     * Definições de temas disponíveis
+     * Cada tema define cores CSS para personalização visual
+     * @constant {Object<string, Object>}
+     */
+    const THEMES = {
         brown: {
             '--primary-color': '#8B6F47',
             '--secondary-color': '#A0826D',
@@ -51,27 +80,95 @@
         }
     };
 
-    // Load saved theme or default to brown
-    const savedTheme = localStorage.getItem('theme') || 'brown';
+    // ============================================================================
+    // THEME FUNCTIONS
+    // ============================================================================
 
-    // Apply theme
+    /**
+     * Aplica um tema ao documento
+     * @param {string} themeName - Nome do tema a ser aplicado
+     * @returns {boolean} True se aplicado com sucesso
+     */
     function applyTheme(themeName) {
-        const theme = themes[themeName];
-        if (!theme) return;
+        const theme = THEMES[themeName];
+        if (!theme) {
+            console.warn(`Theme "${themeName}" not found`);
+            return false;
+        }
 
         const root = document.documentElement;
         for (const [property, value] of Object.entries(theme)) {
             root.style.setProperty(property, value);
         }
+
+        return true;
     }
 
-    // Apply theme as soon as possible
-    applyTheme(savedTheme);
-
-    // Re-apply when DOM is loaded (in case of race conditions)
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-            applyTheme(savedTheme);
-        });
+    /**
+     * Obtém o tema salvo ou retorna o padrão
+     * @returns {string} Nome do tema
+     */
+    function getSavedTheme() {
+        return localStorage.getItem(STORAGE_KEY) || DEFAULT_THEME;
     }
+
+    /**
+     * Salva o tema escolhido
+     * @param {string} themeName - Nome do tema a salvar
+     */
+    function saveTheme(themeName) {
+        if (!THEMES[themeName]) {
+            console.warn(`Cannot save invalid theme: "${themeName}"`);
+            return;
+        }
+        localStorage.setItem(STORAGE_KEY, themeName);
+    }
+
+    /**
+     * Retorna lista de temas disponíveis
+     * @returns {Array<string>} Nomes dos temas disponíveis
+     */
+    function getAvailableThemes() {
+        return Object.keys(THEMES);
+    }
+
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+
+    /**
+     * Inicializa o tema
+     * Carrega o tema salvo ou usa o padrão, aplicando imediatamente
+     */
+    function init() {
+        const savedTheme = getSavedTheme();
+
+        // Aplica tema imediatamente (antes de renderizar)
+        applyTheme(savedTheme);
+
+        // Re-aplica quando DOM estiver carregado (evita flash)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                applyTheme(savedTheme);
+            });
+        }
+    }
+
+    // ============================================================================
+    // GLOBAL API
+    // ============================================================================
+
+    // Expõe API globalmente para uso em outras partes do app
+    window.ThemeManager = {
+        apply: applyTheme,
+        save: saveTheme,
+        getCurrent: getSavedTheme,
+        getAvailable: getAvailableThemes,
+        THEMES
+    };
+
+    // Inicializa tema imediatamente
+    init();
+
 })();
+
