@@ -457,7 +457,15 @@ class App {
 
         if (prevBtn) prevBtn.disabled = this.currentPage === 1;
         if (nextBtn) nextBtn.disabled = this.currentPage === totalPages || totalPages === 0;
-        if (pageInfo) pageInfo.textContent = totalPages > 0 ? `Página ${this.currentPage} de ${totalPages}` : 'Página 1 de 1';
+
+        if (pageInfo) {
+            const currentPageEl = pageInfo.querySelector('.current-page');
+            const separatorEl = pageInfo.querySelector('.separator');
+            const totalPagesEl = pageInfo.querySelector('.total-pages');
+
+            if (currentPageEl) currentPageEl.textContent = this.currentPage;
+            if (totalPagesEl) totalPagesEl.textContent = totalPages > 0 ? totalPages : 1;
+        }
     }
 
     // Next page

@@ -77,6 +77,14 @@
                 </div>
             </div>
         </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h2>⚠️ Zona de Perigo</h2>
+            <p style="color: #666; margin-bottom: 15px;">Ações aqui não podem ser desfeitas!</p>
+            <button class="btn-danger" onclick="if(confirm('⚠️ ATENÇÃO: Isso apagará TODOS os seus dados permanentemente!\n\nTem certeza ABSOLUTA que deseja continuar?')) app.handleClearAll()">
+                🗑️ Limpar Todos os Meus Dados
+            </button>
+        </div>
     </div>
 
     <!-- Load modules in correct order -->

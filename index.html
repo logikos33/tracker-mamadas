@@ -258,14 +258,23 @@
         <div class="history-section">
             <div class="history-header">
                 <h2>📖 Memórias do Bebê</h2>
-                <button class="btn-clear" onclick="if(confirm('Tem certeza que deseja limpar TODOS os dados? Esta ação não pode ser desfeita.')) app.handleClearAll()">🗑️ Limpar Tudo</button>
             </div>
 
             <!-- Paginação -->
             <div class="history-pagination" id="historyPagination">
-                <button class="pagination-btn" onclick="app.previousPage()" id="prevPageBtn" disabled>← Anterior</button>
-                <span class="pagination-info" id="paginationInfo">Página 1 de 1</span>
-                <button class="pagination-btn" onclick="app.nextPage()" id="nextPageBtn" disabled>Próximo →</button>
+                <button class="pagination-btn" onclick="app.previousPage()" id="prevPageBtn" disabled>
+                    <span class="btn-icon">←</span>
+                    <span class="btn-text">Anterior</span>
+                </button>
+                <div class="pagination-info" id="paginationInfo">
+                    <span class="current-page">1</span>
+                    <span class="separator">/</span>
+                    <span class="total-pages">1</span>
+                </div>
+                <button class="pagination-btn" onclick="app.nextPage()" id="nextPageBtn" disabled>
+                    <span class="btn-text">Próximo</span>
+                    <span class="btn-icon">→</span>
+                </button>
             </div>
 
             <div id="historyContent">
