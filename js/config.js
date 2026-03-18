@@ -7,8 +7,8 @@
 // 4. Copy the Project URL and anon public key
 
 const SUPABASE_CONFIG = {
-    url: 'YOUR_SUPABASE_PROJECT_URL', // e.g., 'https://xxxxxxxx.supabase.co'
-    anonKey: 'YOUR_SUPABASE_ANON_KEY' // e.g., 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+    url: 'https://kjchwkftkdiuhqisifbm.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqY2h3a2Z0a2RpdWhxaXNpZmJtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4Mzk2NjcsImV4cCI6MjA4OTQxNTY2N30.9ZS8hu1WXnQ6kIQAf6zzLJpbfEk1-xkxq94AM3x7gPY'
 };
 
 // Database table names
