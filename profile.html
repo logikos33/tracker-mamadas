@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Tracker de Mamadas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-nav">
+                <button onclick="window.location.href='index.html'">← Voltar</button>
+                <button id="logoutButton">🚪 Sair</button>
+            </div>
+            <h1>⚙️ Configurações do Perfil</h1>
+            <p>Configure as informações do seu bebê</p>
+        </header>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <div class="card">
+            <h2>📝 Informações do Bebê</h2>
+            <form id="profileForm" class="profile-form">
+                <div class="form-group">
+                    <label for="babyName">Nome do Bebê</label>
+                    <input type="text" id="babyName" placeholder="Ex: Maria, João, Pedro...">
+                </div>
+
+                <div class="form-group">
+                    <label for="birthDate">Data de Nascimento (opcional)</label>
+                    <input type="date" id="birthDate">
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Isso nos permite calcular a idade do bebê
+                    </small>
+                </div>
+
+                <button type="submit" class="btn-submit">💾 Salvar Alterações</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h2>ℹ️ Informações da Conta</h2>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="userEmail" disabled>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load modules in correct order -->
+    <script src="js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/feeds.js"></script>
+    <script src="js/profile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await authManager.init();
+
+            // Check if user is authenticated
+            if (!authManager.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Initialize profile manager
+            await profileManager.init(authManager.client);
+
+            // Load profile data into form
+            const profile = profileManager.getProfile();
+            if (profile) {
+                document.getElementById('babyName').value = profile.baby_name || '';
+                document.getElementById('birthDate').value = profile.birth_date || '';
+
+                // Display user email
+                const user = authManager.getCurrentUser();
+                if (user) {
+                    document.getElementById('userEmail').value = user.email || '';
+                }
+            }
+
+            // Handle form submission
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const babyName = document.getElementById('babyName').value.trim();
+                const birthDate = document.getElementById('birthDate').value;
+
+                const result = await profileManager.updateProfile({
+                    baby_name: babyName || null,
+                    birth_date: birthDate || null
+                });
+
+                if (result.success) {
+                    showMessage('Perfil atualizado com sucesso!', 'success');
+                } else {
+                    showMessage('Erro ao atualizar perfil: ' + result.error, 'error');
+                }
+            });
+
+            // Handle logout
+            document.getElementById('logoutButton').addEventListener('click', async () => {
+                if (confirm('Tem certeza que deseja sair?')) {
+                    await authManager.signOut();
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+
+        function showMessage(message, type) {
+            const errorEl = document.getElementById('errorMessage');
+            const successEl = document.getElementById('successMessage');
+
+            if (type === 'error') {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+            } else {
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+                errorEl.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
