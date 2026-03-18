@@ -1,4 +1,4 @@
-// Medications Module for Tracker de Mamadas
+// Medications Module for Tracker do Koda
 // Manages medications, logs, and reminders
 
 class MedicationsManager {

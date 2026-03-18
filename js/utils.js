@@ -157,13 +157,14 @@ async function handleMedicationSubmit(event) {
         name: name,
         dosage: dosage,
         frequency: frequency || null,
-        notes: notes || null
+        instructions: notes || null  // Changed from 'notes' to 'instructions'
     });
 
     if (result.success) {
         app.showSuccess('💊 Medicamento adicionado com sucesso!');
         closeMedicationModal();
         // Update medication select
+        await medicationsManager.loadMedications();
         populateMedicationSelect(medicationsManager.getAllMedications());
     } else {
         app.showError('Erro ao adicionar medicamento: ' + result.error);
