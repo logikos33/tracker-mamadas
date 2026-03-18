@@ -367,25 +367,25 @@ class App {
                 <tbody>
                     ${feeds.map(feed => `
                         <tr>
-                            <td>${feedsManager.formatFeedDate(feed.feed_date)}</td>
-                            <td><span class="type-badge ${
+                            <td data-label="Data/Hora">${feedsManager.formatFeedDate(feed.feed_date)}</td>
+                            <td data-label="Tipo"><span class="type-badge ${
                                 feed.type === FEED_TYPES.MATERNO ? 'type-materno' :
                                 feed.type === FEED_TYPES.FORMULA ? 'type-formula' :
                                 feed.type === 'fralda' ? 'type-fralda' : 'type-medicamento'
                             }">
                                 ${getFeedTypeIcon(feed.type)} ${getFeedTypeLabel(feed.type)}
                             </span></td>
-                            <td>${
+                            <td data-label="Duração/Dosagem">${
                                 feed.type === 'medicamento' ? feed.notes :
                                 feed.type === 'fralda' ? 'Troca registrada' :
                                 formatMinutesToHours(feed.duration)
                             }</td>
-                            <td>${
+                            <td data-label="Notas">${
                                 feed.type === 'medicamento' ? (feed.dosage_given || '-') :
                                 feed.type === 'fralda' ? (feed.notes || '-') :
                                 (feed.notes || '-')
                             }</td>
-                            <td><button class="btn-delete" onclick="app.deleteFeed('${feed.id}')">Excluir</button></td>
+                            <td data-label="Ações"><button class="btn-delete" onclick="app.deleteFeed('${feed.id}')">Excluir</button></td>
                         </tr>
                     `).join('')}
                 </tbody>

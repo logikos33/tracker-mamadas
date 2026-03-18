@@ -71,8 +71,9 @@ body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
     min-height: 100vh;
-    padding: 20px;
+    padding: 15px;
     transition: background 0.5s ease;
+    font-size: 14px;
 }
 
 /* Animal icon animation */
@@ -412,6 +413,47 @@ input:focus, select:focus, textarea:focus {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    display: block;
+}
+
+.history-table thead,
+.history-table tbody,
+.history-table tr,
+.history-table th,
+.history-table td {
+    display: block;
+}
+
+.history-table thead {
+    display: none;
+}
+
+.history-table tr {
+    margin-bottom: 15px;
+    border: 2px solid var(--light-color);
+    border-radius: 12px;
+    background: white;
+}
+
+.history-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.history-table td:last-child {
+    border-bottom: none;
+}
+
+.history-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-right: 10px;
 }
 
 .history-table th {
@@ -420,19 +462,6 @@ input:focus, select:focus, textarea:focus {
     padding: 15px;
     text-align: left;
     font-weight: 500;
-}
-
-.history-table th:first-child {
-    border-radius: 10px 0 0 0;
-}
-
-.history-table th:last-child {
-    border-radius: 0 10px 0 0;
-}
-
-.history-table td {
-    padding: 15px;
-    border-bottom: 1px solid #e0e0e0;
 }
 
 .history-table tr:hover {
@@ -898,18 +927,18 @@ input:focus, select:focus, textarea:focus {
 }
 
 .diaper-stats .icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    margin-bottom: 8px;
 }
 
 .diaper-stats .count {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--primary-color);
 }
 
 .diaper-stats .label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--dark-color);
     margin-top: 5px;
 }
@@ -931,7 +960,7 @@ input:focus, select:focus, textarea:focus {
 .diaper-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 15px;
+    gap: 10px;
 }
 
 .diaper-grid-3 {
@@ -1297,8 +1326,270 @@ input:focus, select:focus, textarea:focus {
     margin-top: 6px;
 }
 
+/* ========================================
+   MOBILE OPTIMIZATIONS (≤768px)
+   ======================================== */
 @media (max-width: 768px) {
+    /* Body & Container */
+    body {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    /* Header */
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    header p {
+        font-size: 0.9rem;
+    }
+
+    /* Cards */
+    .card {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .card h2 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    /* Forms */
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+
+    .btn-submit {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Main Content */
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-card .number {
+        font-size: 2rem;
+    }
+
+    .stat-card .label {
+        font-size: 0.85rem;
+    }
+
+    /* Diaper Section */
+    .diaper-section {
+        padding: 20px 15px;
+    }
+
+    .diaper-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .diaper-stats {
+        padding: 15px 10px;
+    }
+
+    .diaper-stats .icon {
+        font-size: 1.8rem;
+    }
+
+    .diaper-stats .count {
+        font-size: 1.8rem;
+    }
+
+    .diaper-stats .label {
+        font-size: 0.8rem;
+    }
+
+    .diaper-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    /* History Table */
+    .history-table {
+        font-size: 0.85rem;
+    }
+
+    .history-table td {
+        padding: 10px 12px;
+    }
+
+    /* Charts */
+    .charts-section {
+        padding: 15px;
+    }
+
+    .chart-wrapper {
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+
+    .period-filter button {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Medications */
     .medications-grid {
         grid-template-columns: 1fr;
+    }
+
+    .medication-card {
+        padding: 15px;
+    }
+
+    .medication-icon {
+        font-size: 2rem;
+    }
+
+    .medication-name {
+        font-size: 1rem;
+    }
+
+    .medication-dosage,
+    .medication-frequency {
+        font-size: 0.8rem;
+        padding: 3px 8px;
+    }
+
+    /* Logs */
+    .log-entry {
+        padding: 12px;
+    }
+
+    .log-icon {
+        font-size: 1.5rem;
+    }
+
+    .log-medication {
+        font-size: 0.95rem;
+    }
+
+    .log-dosage,
+    .log-concentration {
+        font-size: 0.85rem;
+    }
+
+    .log-date {
+        font-size: 0.8rem;
+    }
+
+    .log-notes {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+
+    /* Reminders */
+    .reminder-item {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .reminder-actions {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    /* Buttons */
+    .btn-small {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+
+    /* Duration Buttons */
+    .duration-buttons {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+    }
+
+    .duration-btn {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+
+    /* Quick Diaper Button */
+    .btn-quick-diaper {
+        padding: 15px 20px;
+        font-size: 0.9rem;
+    }
+
+    .btn-quick-diaper span:first-child {
+        font-size: 1.5rem;
+    }
+
+    /* Modal */
+    .modal-content {
+        padding: 20px 15px;
+        margin: 10px;
+        max-height: 95vh;
+    }
+
+    .modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+    }
+}
+
+/* Extra Small Screens (≤480px) */
+@media (max-width: 480px) {
+    body {
+        font-size: 12px;
+    }
+
+    .diaper-grid {
+        gap: 6px;
+    }
+
+    .diaper-stats {
+        padding: 12px 8px;
+    }
+
+    .stat-card .number {
+        font-size: 1.8rem;
+    }
+
+    .medication-card {
+        padding: 12px;
+    }
+
+    .log-entry {
+        padding: 10px;
     }
 }
