@@ -158,9 +158,30 @@
             </div>
         </div>
 
+        <!-- Medicamentos -->
+        <div class="card" style="margin-bottom: 20px;">
+            <h2>💊 Medicamentos do Bebê</h2>
+
+            <div id="medicationsContent">
+                <div class="empty-state">
+                    <p>Nenhum medicamento cadastrado</p>
+                    <p>Use o campo "Tipo de Alimentação" e selecione "Medicamento" para adicionar</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 10px; font-size: 1.1rem;">📋 Histórico Recente de Medicamentos</h3>
+                <div id="medicationLogsContent">
+                    <div class="empty-state" style="padding: 20px;">
+                        <p>Nenhum registro de medicamento hoje</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Lembretes -->
         <div class="card" style="margin-bottom: 20px;">
-            <h2>⏰ Lembretes de Mamada</h2>
+            <h2>⏰ Lembretes do Dia</h2>
 
             <form id="reminderForm" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
                 <input type="time" id="reminderTime" required style="flex: 1; min-width: 150px;">
@@ -200,6 +221,8 @@
     <script src="js/profile.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/reminders.js"></script>
+    <script src="js/medications.js"></script>
+    <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
     <script>
         // Handle reminder form submission

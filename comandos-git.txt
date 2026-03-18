@@ -1,0 +1,13 @@
+# Após criar o repositório no GitHub, execute estes comandos:
+
+# Entre na pasta do projeto (se ainda não estiver nela)
+cd "/Users/vitoremanuel/Vibecoding do KODA/tracker-mamadas"
+
+# Adicione o remote (substitua SEU_USUARIO pelo seu usuário do GitHub)
+git remote add origin https://github.com/SEU_USUARIO/tracker-mamadas.git
+
+# Renomeie a branch para main (se necessário)
+git branch -M main
+
+# Faça o push
+git push -u origin main

@@ -24,6 +24,7 @@ class App {
             await feedsManager.init(authManager.client);
             await profileManager.init(authManager.client);
             await remindersManager.init(authManager.client);
+            await medicationsManager.init(authManager.client);
 
             // Initialize charts
             chartsManager.init();
@@ -62,6 +63,14 @@ class App {
         const feedForm = document.getElementById('feedForm');
         if (feedForm) {
             feedForm.addEventListener('submit', (e) => this.handleFeedSubmit(e));
+        }
+
+        // Feed type change
+        const feedType = document.getElementById('feedType');
+        if (feedType) {
+            feedType.addEventListener('change', (e) => {
+                handleFeedTypeChange(e.target.value);
+            });
         }
 
         // Period filter buttons
@@ -154,23 +163,63 @@ class App {
         event.preventDefault();
 
         const type = document.getElementById('feedType').value;
-        const duration = parseInt(document.getElementById('feedDuration').value);
         const feedDate = document.getElementById('feedDate').value;
-        const notes = document.getElementById('feedNotes')?.value || '';
+        let result;
 
-        const result = await feedsManager.createFeed({
-            type,
-            duration,
-            feed_date: feedDate,
-            notes
-        });
+        if (type === 'medicamento') {
+            // Handle medication
+            const medicationId = document.getElementById('medicationSelect').value;
+            const dosageGiven = document.getElementById('medicationDosage').value;
+            const notes = document.getElementById('feedNotes')?.value || '';
+
+            if (!medicationId) {
+                this.showError('Por favor, selecione um medicamento.');
+                return;
+            }
+
+            // Get medication details
+            const medication = medicationsManager.getMedicationById(medicationId);
+            const combinedNotes = `${medication.name} - ${dosageGiven}${notes ? ' - ' + notes : ''}`;
+
+            result = await feedsManager.createFeed({
+                type: 'medicamento',
+                duration: 0, // Medications don't have duration
+                feed_date: feedDate,
+                notes: combinedNotes
+            });
+
+            // Also log in medications
+            if (result.success) {
+                await medicationsManager.logMedication({
+                    medication_id: medicationId,
+                    dosage_given: dosageGiven,
+                    log_date: feedDate,
+                    notes: notes
+                });
+            }
+        } else {
+            // Handle regular feeds
+            const duration = parseInt(document.getElementById('feedDuration').value);
+            const notes = document.getElementById('feedNotes')?.value || '';
+
+            result = await feedsManager.createFeed({
+                type,
+                duration,
+                feed_date: feedDate,
+                notes
+            });
+        }
 
         if (result.success) {
-            this.showSuccess('✓ Mamada registrada com sucesso!');
+            const typeLabel = type === 'medicamento' ? 'Medicamento' :
+                             type === 'materno' ? 'Momento de Amor' : 'Alimentação';
+            this.showSuccess(`✓ ${typeLabel} registrado com sucesso!`);
             document.getElementById('feedForm').reset();
             this.setCurrentDateTime();
+            // Reset fields visibility
+            handleFeedTypeChange('');
         } else {
-            this.showError('Erro ao registrar mamada: ' + result.error);
+            this.showError('Erro ao registrar: ' + result.error);
         }
     }
 
@@ -228,8 +277,8 @@ class App {
         const avgDuration = document.getElementById('avgDuration');
 
         if (todayCount) todayCount.textContent = todayStats.count;
-        if (todayDuration) todayDuration.textContent = todayStats.totalDuration;
-        if (avgDuration) avgDuration.textContent = todayStats.avgDuration;
+        if (todayDuration) todayDuration.textContent = formatMinutesToHours(todayStats.totalDuration);
+        if (avgDuration) avgDuration.textContent = formatMinutesToHours(todayStats.avgDuration);
 
         // Update distribution chart
         const todayFeeds = feedsManager.getTodayFeeds();
@@ -238,6 +287,9 @@ class App {
         // Update additional stats if elements exist
         this.updatePeriodStats(weekStats, 'week');
         this.updatePeriodStats(monthStats, 'month');
+
+        // Update medications select
+        populateMedicationSelect(medicationsManager.getAllMedications());
     }
 
     // Update period statistics
@@ -247,8 +299,8 @@ class App {
         const avgEl = document.getElementById(`${period}Avg`);
 
         if (countEl) countEl.textContent = stats.count;
-        if (durationEl) durationEl.textContent = stats.totalDuration;
-        if (avgEl) avgEl.textContent = stats.avgDuration;
+        if (durationEl) durationEl.textContent = formatMinutesToHours(stats.totalDuration);
+        if (avgEl) avgEl.textContent = formatMinutesToHours(stats.avgDuration);
     }
 
     // Update history table
@@ -264,8 +316,8 @@ class App {
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                     </svg>
-                    <p>Nenhuma mamada registrada ainda</p>
-                    <p>Comece adicionando uma mamada no formulário acima!</p>
+                    <p>Nenhum momento registrado ainda</p>
+                    <p>Comece adicionando no formulário acima!</p>
                 </div>
             `;
             return;
@@ -277,7 +329,7 @@ class App {
                     <tr>
                         <th>Data/Hora</th>
                         <th>Tipo</th>
-                        <th>Duração</th>
+                        <th>Duração/Dosagem</th>
                         <th>Notas</th>
                         <th>Ações</th>
                     </tr>
@@ -286,11 +338,11 @@ class App {
                     ${feeds.map(feed => `
                         <tr>
                             <td>${feedsManager.formatFeedDate(feed.feed_date)}</td>
-                            <td><span class="type-badge ${feed.type === FEED_TYPES.MATERNO ? 'type-materno' : 'type-formula'}">
-                                ${feed.type === FEED_TYPES.MATERNO ? '🤱 Leite Materno' : '🍼 Fórmula'}
+                            <td><span class="type-badge ${feed.type === FEED_TYPES.MATERNO ? 'type-materno' : feed.type === FEED_TYPES.FORMULA ? 'type-formula' : 'type-medicamento'}">
+                                ${getFeedTypeIcon(feed.type)} ${getFeedTypeLabel(feed.type)}
                             </span></td>
-                            <td>${feed.duration} minutos</td>
-                            <td>${feed.notes || '-'}</td>
+                            <td>${feed.type === 'medicamento' ? feed.notes : formatMinutesToHours(feed.duration)}</td>
+                            <td>${feed.notes && feed.type !== 'medicamento' ? feed.notes : (feed.type === 'medicamento' ? (feed.dosage_given || '-') : '-')}</td>
                             <td><button class="btn-delete" onclick="app.deleteFeed('${feed.id}')">Excluir</button></td>
                         </tr>
                     `).join('')}
