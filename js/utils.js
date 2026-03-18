@@ -105,13 +105,23 @@ function populateMedicationSelect(medications) {
  * Open medication modal
  */
 function openMedicationModal() {
+    console.log('Opening medication modal...');
     const modal = document.getElementById('medicationModal');
+    console.log('Modal element:', modal);
+
     if (modal) {
         modal.style.display = 'flex';
+        console.log('Modal display set to flex');
         // Focus on first input
         setTimeout(() => {
-            document.getElementById('newMedicationName').focus();
+            const nameInput = document.getElementById('newMedicationName');
+            if (nameInput) {
+                nameInput.focus();
+                console.log('Focused on name input');
+            }
         }, 100);
+    } else {
+        console.error('Modal element not found!');
     }
 }
 
